@@ -1,5 +1,6 @@
 namespace DemoWF.Core
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using OpenQA.Selenium;
@@ -37,6 +38,18 @@ namespace DemoWF.Core
         #endregion
 
         #region CustomMethods
+
+        public void NavigateToUrl(Uri uri)
+        {
+            Driver.Navigate().GoToUrl(uri);
+        }
+
+        public void CloseBrowser(Uri uri)
+        {
+            Driver.Quit();
+            Driver.Close();
+        }
+
         public bool GetSelectorStatus(string selector)
         {
             return Driver.FindElements(By.CssSelector(selector)).Any();
