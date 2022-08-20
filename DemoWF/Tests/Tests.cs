@@ -3,7 +3,7 @@ namespace DemoWF.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class Tests
+    public class Tests : TestSetup
     {
         [SetUp]
         public void Setup()
