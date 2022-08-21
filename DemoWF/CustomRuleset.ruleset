@@ -20,4 +20,7 @@
     <Rule Id="SX1101" Action="Warning" />
     <Rule Id="SX1309S" Action="Warning" />
   </Rules>
+  <Rules AnalyzerId="nunit.analyzers" RuleNamespace="nunit.analyzers">
+    <Rule Id="NUnit2005" Action="None" />
+  </Rules>
 </RuleSet>
