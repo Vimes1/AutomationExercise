@@ -1,15 +1,16 @@
 ﻿namespace DemoWF
 {
+    using System;
     using DemoWF.Core;
     using NUnit.Framework;
 
-    [SetUpFixture]
+    [TestFixture]
     public class Base : Browser
     {
         [OneTimeSetUp]
-        public static void SetupData(TestContext context)
+        public void SetupData()
         {
-
+            Browser.PageUri = new Uri(TestContext.Parameters.Get("TargetUrl"));
         }
     }
 }

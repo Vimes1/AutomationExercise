@@ -5,9 +5,9 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoWF", "DemoWF\DemoWF.csproj", "{1CE05958-BABC-4299-9DFD-22A5D5C6044A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run Settings", "Run Settings", "{44FBF35F-04FA-4368-8D33-83B4439DB879}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F5CCE870-407D-441B-B1D8-066447CDDFDF}"
 	ProjectSection(SolutionItems) = preProject
-		DemoWF\runsettings\Config.runsettings = DemoWF\runsettings\Config.runsettings
+		runsettings\Config.runsettings = runsettings\Config.runsettings
 	EndProjectSection
 EndProject
 Global

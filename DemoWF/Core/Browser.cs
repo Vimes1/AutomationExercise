@@ -10,6 +10,8 @@ namespace DemoWF.Core
     {
         #region BrowserSetting
 
+        public static Uri PageUri { get; set; }
+
         private IWebDriver Driver { get; set; } = new ChromeDriver();
 
         #endregion
@@ -44,10 +46,10 @@ namespace DemoWF.Core
             Driver.Navigate().GoToUrl(uri);
         }
 
-        public void CloseBrowser(Uri uri)
+        public void CloseBrowser()
         {
-            Driver.Quit();
             Driver.Close();
+            Driver.Quit();
         }
 
         public bool GetSelectorStatus(string selector)
