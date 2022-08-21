@@ -3,6 +3,7 @@ namespace DemoWF.Core
     using System;
     using System.Linq;
     using System.Threading;
+    using NUnit.Framework;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
 
@@ -21,7 +22,9 @@ namespace DemoWF.Core
         public enum FormActions
         {
             ClickElement,
-            AssertText
+            AssertText,
+            AssertStatus,
+            AssertValue
         }
 
         private void ActionSelector(FormActions desiredAction, string selector, string optionalText)
@@ -31,8 +34,14 @@ namespace DemoWF.Core
                 case FormActions.ClickElement:
                     ClickElement(selector);
                     break;
+                case FormActions.AssertStatus:
+                    AssertStatus(selector);
+                    break;
                 case FormActions.AssertText:
                     AssertText(selector, optionalText);
+                    break;
+                case FormActions.AssertValue:
+                    AssertValue(selector, optionalText);
                     break;
             }
         }
@@ -57,6 +66,15 @@ namespace DemoWF.Core
             return Driver.FindElements(By.CssSelector(selector)).Any();
         }
 
+        public string GetSelectorText(string selector)
+        {
+            return Driver.FindElement(By.CssSelector(selector)).Text;
+        }
+        public string GetSelectorValue(string selector)
+        {
+            return Driver.FindElement(By.CssSelector(selector)).GetAttribute("value");
+        }
+
         public bool GetDisplayedStatus(string selector)
         {
             return Driver.FindElement(By.CssSelector(selector)).Displayed;
@@ -69,7 +87,51 @@ namespace DemoWF.Core
 
         public void AssertText(string selector, string expectedText)
         {
-            Driver.FindElement(By.CssSelector(selector)).Click();
+            Assert.AreEqual(expectedText, GetSelectorText(selector));
+        }
+
+        public void AssertValue(string selector, string expectedText)
+        {
+            Assert.AreEqual(expectedText, GetSelectorValue(selector));
+        }
+
+        public void AssertStatus(string selector)
+        {
+            Thread.Sleep(3000);
+            Assert.IsTrue(GetSelectorStatus(selector));
+        }
+
+        public void WaitFor(string selector)
+        {
+            int count = 0;
+
+            while (GetSelectorStatus(selector) == false)
+            {
+                count++;
+                Thread.Sleep(250);
+
+                if (count > 60)
+                {
+                    throw new NoSuchElementException("Element was not locatable by FindElements within the time limit");
+                }
+            }
+
+            if (GetSelectorStatus(selector))
+            {
+                if (GetDisplayedStatus(selector) == false)
+                {
+                    while (GetDisplayedStatus(selector) == false)
+                    {
+                        count++;
+                        Thread.Sleep(250);
+
+                        if (count > 120)
+                        {
+                            throw new ElementNotVisibleException("Element was not visible on the page within the time limit");
+                        }
+                    }
+                }
+            }
         }
 
         public void WaitAction(string selector, FormActions desiredAction, string optionalText = "")

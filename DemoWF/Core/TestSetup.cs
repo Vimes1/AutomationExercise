@@ -1,7 +1,8 @@
 namespace DemoWF
 {
-    using NUnit.Framework;
     using System;
+
+    using NUnit.Framework;
 
     [TestFixture]
     public class TestSetup : Base
