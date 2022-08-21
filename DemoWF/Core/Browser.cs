@@ -3,6 +3,7 @@ namespace DemoWF.Core
     using System;
     using System.Linq;
     using System.Threading;
+    using System.Timers;
     using NUnit.Framework;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
@@ -14,37 +15,6 @@ namespace DemoWF.Core
         public static Uri PageUri { get; set; }
 
         private IWebDriver Driver { get; set; } = new ChromeDriver();
-
-        #endregion
-
-        #region HelperMethods
-
-        public enum FormActions
-        {
-            ClickElement,
-            AssertText,
-            AssertStatus,
-            AssertValue
-        }
-
-        private void ActionSelector(FormActions desiredAction, string selector, string optionalText)
-        {
-            switch (desiredAction)
-            {
-                case FormActions.ClickElement:
-                    ClickElement(selector);
-                    break;
-                case FormActions.AssertStatus:
-                    AssertStatus(selector);
-                    break;
-                case FormActions.AssertText:
-                    AssertText(selector, optionalText);
-                    break;
-                case FormActions.AssertValue:
-                    AssertValue(selector, optionalText);
-                    break;
-            }
-        }
 
         #endregion
 
@@ -66,42 +36,63 @@ namespace DemoWF.Core
             return Driver.FindElements(By.CssSelector(selector)).Any();
         }
 
-        public string GetSelectorText(string selector)
-        {
-            return Driver.FindElement(By.CssSelector(selector)).Text;
-        }
-        public string GetSelectorValue(string selector)
-        {
-            return Driver.FindElement(By.CssSelector(selector)).GetAttribute("value");
-        }
-
         public bool GetDisplayedStatus(string selector)
         {
             return Driver.FindElement(By.CssSelector(selector)).Displayed;
         }
 
+        public string GetSelectorText(string selector)
+        {
+            WaitFor(selector);
+            return Driver.FindElement(By.CssSelector(selector)).Text;
+        }
+
+        public string GetSelectorValue(string selector, bool waitForDisplayed = true)
+        {
+            WaitFor(selector, waitForDisplayed);
+            return Driver.FindElement(By.CssSelector(selector)).GetAttribute("value");
+        }
+
         public void ClickElement(string selector)
         {
+            WaitFor(selector);
             Driver.FindElement(By.CssSelector(selector)).Click();
+        }
+
+        public void JQClickElement(params string[] selectors)
+        {
+            foreach (string selector in selectors)
+            {
+                IWebElement element = Driver.FindElement(By.CssSelector(selector));
+                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", element);
+            }
+        }
+
+        public void JQScrollTo(string selector)
+        {
+            IWebElement element = Driver.FindElement(By.CssSelector(selector));
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({inline: 'center'});", element);
         }
 
         public void AssertText(string selector, string expectedText)
         {
+            WaitFor(selector);
             Assert.AreEqual(expectedText, GetSelectorText(selector));
         }
 
-        public void AssertValue(string selector, string expectedText)
+        public void AssertValue(string selector, string expectedText, bool waitForDisplayed = true)
         {
-            Assert.AreEqual(expectedText, GetSelectorValue(selector));
+            WaitFor(selector, waitForDisplayed);
+            Assert.AreEqual(expectedText, GetSelectorValue(selector, waitForDisplayed));
         }
 
-        public void AssertStatus(string selector)
+        public void AssertStatus(string selector, bool waitForDisplayed = true)
         {
-            Thread.Sleep(3000);
+            WaitFor(selector, waitForDisplayed);
             Assert.IsTrue(GetSelectorStatus(selector));
         }
 
-        public void WaitFor(string selector)
+        public void WaitFor(string selector, bool waitForDisplayed = true)
         {
             int count = 0;
 
@@ -116,57 +107,25 @@ namespace DemoWF.Core
                 }
             }
 
-            if (GetSelectorStatus(selector))
+            if (waitForDisplayed)
             {
-                if (GetDisplayedStatus(selector) == false)
+                if (GetSelectorStatus(selector))
                 {
-                    while (GetDisplayedStatus(selector) == false)
+                    if (GetDisplayedStatus(selector) == false)
                     {
-                        count++;
-                        Thread.Sleep(250);
-
-                        if (count > 120)
+                        while (GetDisplayedStatus(selector) == false)
                         {
-                            throw new ElementNotVisibleException("Element was not visible on the page within the time limit");
+                            count++;
+                            Thread.Sleep(250);
+
+                            if (count > 120)
+                            {
+                                throw new ElementNotVisibleException("Element was not visible on the page within the time limit");
+                            }
                         }
                     }
                 }
             }
-        }
-
-        public void WaitAction(string selector, FormActions desiredAction, string optionalText = "")
-        {
-            int count = 0;
-
-            while (GetSelectorStatus(selector) == false)
-            {
-                count++;
-                Thread.Sleep(250);
-
-                if (count > 60)
-                {
-                    throw new NoSuchElementException("Element was not locatable by FindElements within the time limit");
-                }
-            }
-
-            if (GetSelectorStatus(selector))
-            {
-                if (GetDisplayedStatus(selector) == false)
-                {
-                    while (GetDisplayedStatus(selector) == false)
-                    {
-                        count++;
-                        Thread.Sleep(250);
-
-                        if (count > 120)
-                        {
-                            throw new ElementNotVisibleException("Element was not visible on the page within the time limit");
-                        }
-                    }
-                }
-            }
-
-            ActionSelector(desiredAction, selector, optionalText);
         }
 
         #endregion

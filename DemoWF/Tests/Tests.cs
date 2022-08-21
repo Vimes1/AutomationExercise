@@ -1,8 +1,6 @@
 namespace DemoWF.Tests
 {
-    using System;
     using NUnit.Framework;
-    using static DemoWF.Core.Browser;
     using static DemoWF.Core.Selectors;
 
     [TestFixture]
@@ -29,29 +27,71 @@ namespace DemoWF.Tests
         [Test]
         public void DatePickerTest()
         {
-            WaitAction(DatePicker()["Field"], FormActions.ClickElement);
-            WaitFor(DatePicker()["Container"]);
-            WaitAction(DatePicker()["NextButton"], FormActions.ClickElement);
-            WaitAction(DatePicker()["15th September"], FormActions.ClickElement);
-            WaitAction(DatePicker()["Field /w value"], FormActions.AssertStatus);
+            // click the DatePicker field and wait for the date value selections to show
+            ClickElement(DatePicker()["Field"]);
+            AssertStatus(DatePicker()["Container"]);
+
+            // click the next button arrow to move the month to september and select the 15th
+            ClickElement(DatePicker()["NextButton"]);
+            ClickElement(DatePicker()["15th September"]);
+
+            // assert that the DatePicker fields now shows a value
+            AssertStatus(DatePicker()["Field /w value"], waitForDisplayed: false);
         }
 
         [Test]
         public void ComboBoxTest()
         {
-            WaitAction(ComboBox()["DropDown"], FormActions.ClickElement);
+            // click combo box dropdown and wait for the results to show
+            ClickElement(ComboBox()["DropDown"]);
             WaitFor(ComboBox()["Container"]);
-            WaitAction(ComboBox()["Barley"], FormActions.ClickElement);
-            AssertValue(ComboBox()["Field /w value"], "211");
+
+            // click the option at the bottom of the list - Barley
+            ClickElement(ComboBox()["Barley"]);
+
+            // assert that the field now shows the corresponding value for Barley
+            AssertValue(ComboBox()["Field /w value"], "211", waitForDisplayed: false);
         }
 
         [Test]
         public void AjaxCheckBoxTest()
         {
-            WaitAction(ComboBox()["DropDown"], FormActions.ClickElement);
-            WaitFor(ComboBox()["Container"]);
-            WaitAction(ComboBox()["Barley"], FormActions.ClickElement);
-            AssertValue(ComboBox()["Field /w value"], "211");
+            // wait for AjaxCheckBox to show on the page
+            WaitFor(AjaxCheckBox()["Container"]);
+
+            // uncheck the 2 default selected vegetables
+            JQClickElement(
+                Vegetable(Type()["Broccoli"]),
+                Vegetable(Type()["Artichoke"])
+                );
+
+            // select all vegetables
+            JQClickElement(
+                Vegetable(Type()["Celery"]),
+                Vegetable(Type()["Broccoli"]),
+                Vegetable(Type()["Artichoke"]),
+                Vegetable(Type()["Cauliflower"]),
+                Vegetable(Type()["Lettuce"])
+                );
+
+            // assert that all checkboxes are selected
+            AssertValue(AjaxCheckBox()["All Checkboxes"], "[\"183\",\"185\",\"187\",\"189\",\"191\"]", waitForDisplayed: false);
+        }
+
+        [Test]
+        public void GridTest()
+        {
+            // wait for Grid to show on the page and scroll to it
+            WaitFor(Grid()["Container"]);
+            JQScrollTo(Grid()["Container"]);
+
+            // click drop-down for page size, click '100'
+            JQClickElement(Grid()["Page Size"]);
+            JQClickElement(Grid()["100"]);
+
+            // click the last page '8' and assert that the first row shown is the correct value
+            ClickElement(Grid()["Last Page"]);
+            AssertStatus(Grid()["First Row"], waitForDisplayed: true);
         }
 
         #endregion
