@@ -4,9 +4,10 @@ namespace DemoWF.Tests
     using static DemoWF.Core.Selectors;
 
     [TestFixture]
+    [Description("Test Class running functional tests of the demo-wf page entities.")]
     public class Tests : TestSetup
     {
-        #region SetupTeardown
+        #region Setup
 
         [SetUp]
         public void Setup()
@@ -14,17 +15,12 @@ namespace DemoWF.Tests
             TestInitialisation(PageUri);
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            TestTearDown();
-        }
-
         #endregion
 
         #region PageTests
 
         [Test]
+        [Description("Navigates to the test page, sets the DatePicker to 15/09/2022 and verifies the result.")]
         public void DatePickerTest()
         {
             // click the DatePicker field and wait for the date value selections to show
@@ -40,6 +36,7 @@ namespace DemoWF.Tests
         }
 
         [Test]
+        [Description("Navigates to the test page, and sets the ComboBox to Barley and verifies the result.")]
         public void ComboBoxTest()
         {
             // click combo box dropdown and wait for the results to show
@@ -54,6 +51,7 @@ namespace DemoWF.Tests
         }
 
         [Test]
+        [Description("Navigates to the test page, and checks all the AjaxCheckBox options and verifies the result.")]
         public void AjaxCheckBoxTest()
         {
             // wait for AjaxCheckBox to show on the page
@@ -62,8 +60,7 @@ namespace DemoWF.Tests
             // uncheck the 2 default selected vegetables
             JQClickElement(
                 Vegetable(Type()["Broccoli"]),
-                Vegetable(Type()["Artichoke"])
-                );
+                Vegetable(Type()["Artichoke"]));
 
             // select all vegetables
             JQClickElement(
@@ -71,14 +68,14 @@ namespace DemoWF.Tests
                 Vegetable(Type()["Broccoli"]),
                 Vegetable(Type()["Artichoke"]),
                 Vegetable(Type()["Cauliflower"]),
-                Vegetable(Type()["Lettuce"])
-                );
+                Vegetable(Type()["Lettuce"]));
 
             // assert that all checkboxes are selected
             AssertValue(AjaxCheckBox()["All Checkboxes"], "[\"183\",\"185\",\"187\",\"189\",\"191\"]", waitForDisplayed: false);
         }
 
         [Test]
+        [Description("Navigates to the test page, scrolls to the Grid, navigates the last page within and verifies the result.")]
         public void GridTest()
         {
             // wait for Grid to show on the page and scroll to it

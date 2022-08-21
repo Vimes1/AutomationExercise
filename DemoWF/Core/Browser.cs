@@ -3,11 +3,11 @@ namespace DemoWF.Core
     using System;
     using System.Linq;
     using System.Threading;
-    using System.Timers;
     using NUnit.Framework;
     using OpenQA.Selenium;
     using OpenQA.Selenium.Chrome;
 
+    [Description("Class for Browser initialisation and custom methods to run actions within the tests.")]
     public class Browser
     {
         #region BrowserSetting

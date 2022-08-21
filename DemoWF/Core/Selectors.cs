@@ -1,9 +1,9 @@
 namespace DemoWF.Core
 {
-    using NUnit.Framework;
-    using System.Collections;
     using System.Collections.Generic;
+    using NUnit.Framework;
 
+    [Description("Class for selectors used by the Tests to give them more easily identifiable names.")]
     public static class Selectors
     {
         #region DatePickerTest
@@ -15,7 +15,7 @@ namespace DemoWF.Core
                 { "Field", "#ContentPlaceHolder1_Date1" },
                 { "NextButton", "[class='awe-btn o-cmbtn o-mnxt']" },
                 { "15th September", "[data-t='1663196400000']" },
-                { "Field /w value", "[class='awe-datepicker-field awe-field awe-hasval awe-focus']" }
+                { "Field /w value", "[class='awe-datepicker-field awe-field awe-hasval awe-focus']" },
             };
 
             return selector;
@@ -31,7 +31,7 @@ namespace DemoWF.Core
                 { "Container", "#ContentPlaceHolder1_AllMealsCombo-dropmenu" },
                 { "DropDown", "[class='o-cbxbtn o-ddbtn awe-btn o-btn']" },
                 { "Barley", "#ContentPlaceHolder1_AllMealsCombo-dropmenu [data-index='24']" },
-                { "Field /w value", "#ContentPlaceHolder1_AllMealsCombo" }
+                { "Field /w value", "#ContentPlaceHolder1_AllMealsCombo" },
             };
 
             return selector;
