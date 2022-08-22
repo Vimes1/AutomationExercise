@@ -31,6 +31,11 @@ namespace DemoWF.Core
             Driver.Quit();
         }
 
+        public IWebElement GetElement(string selector)
+        {
+            return Driver.FindElement(By.CssSelector(selector));
+        }
+
         public bool GetSelectorStatus(string selector)
         {
             return Driver.FindElements(By.CssSelector(selector)).Any();
@@ -38,40 +43,39 @@ namespace DemoWF.Core
 
         public bool GetDisplayedStatus(string selector)
         {
-            return Driver.FindElement(By.CssSelector(selector)).Displayed;
+            return GetElement(selector).Displayed;
         }
 
         public string GetSelectorText(string selector)
         {
             WaitFor(selector);
-            return Driver.FindElement(By.CssSelector(selector)).Text;
+            return GetElement(selector).Text;
         }
 
         public string GetSelectorValue(string selector, bool waitForDisplayed = true)
         {
             WaitFor(selector, waitForDisplayed);
-            return Driver.FindElement(By.CssSelector(selector)).GetAttribute("value");
+            return GetElement(selector).GetAttribute("value");
         }
 
         public void ClickElement(string selector)
         {
             WaitFor(selector);
-            Driver.FindElement(By.CssSelector(selector)).Click();
+            GetElement(selector).Click();
         }
 
         public void JQClickElement(params string[] selectors)
         {
             foreach (string selector in selectors)
             {
-                IWebElement element = Driver.FindElement(By.CssSelector(selector));
-                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", element);
+                ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].click();", GetElement(selector));
             }
         }
 
         public void JQScrollTo(string selector)
         {
             IWebElement element = Driver.FindElement(By.CssSelector(selector));
-            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({inline: 'center'});", element);
+            ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({inline: 'center'});", GetElement(selector));
         }
 
         public void AssertText(string selector, string expectedText)
