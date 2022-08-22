@@ -82,7 +82,7 @@ namespace DemoWF.Core
                 { "Page Size", "#ContentPlaceHolder1_Grid1PageSize-awed" },
                 { "100", "#ContentPlaceHolder1_Grid1PageSize-dropmenu [data-val='100']" },
                 { "Last Page", "#ContentPlaceHolder1_Grid1 [data-p='8']" },
-                { "First Row", "[data-k=\"601\"]" },
+                { "First Row", "[data-k='601']" },
             };
 
             return selector;
