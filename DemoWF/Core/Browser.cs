@@ -74,7 +74,6 @@ namespace DemoWF.Core
 
         public void JQScrollTo(string selector)
         {
-            IWebElement element = Driver.FindElement(By.CssSelector(selector));
             ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView({inline: 'center'});", GetElement(selector));
         }
 
